@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The BookShelf — كتب. قصص. عوالم.</title>
+  <meta name="description" content="The BookShelf متجر الكتب — اكتشف أفضل الكتب بأسعار حصرية. باقة هاري بوتر الكاملة وكتب التطوير الذاتي. شحن سريع خلال 7 أيام." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #000000;
+      --black-elevated: #0a0a0a;
+      --black-card: #111111;
+      --black-surface: #1a1a1a;
+      --white: #ffffff;
+      --gold: #c9a96e;
+      --gold-light: #e8c98a;
+      --gold-dark: #9a7340;
+      --shade-30: #d4d4d8;
+      --shade-40: #a1a1aa;
+      --shade-50: #71717a;
+      --shade-60: #52525b;
+      --shade-70: #3f3f46;
+      --hairline: #252525;
+      --r-pill: 9999px;
+      --r-lg: 12px;
+      --r-md: 8px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--black);
+      color: var(--white);
+      direction: rtl;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 9999px; }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed; top: 0; right: 0; left: 0; z-index: 1000;
+      background: rgba(0,0,0,0.88); backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201,169,110,0.12);
+      padding: 14px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.3s;
+    }
+    .navbar.scrolled { background: rgba(0,0,0,0.97); border-bottom-color: rgba(201,169,110,0.2); }
+    .nav-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+    .nav-logo img { height: 54px; width: 54px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(201,169,110,0.3); }
+    .nav-logo-name { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: var(--gold); display: block; }
+    .nav-logo-sub { font-size: 9px; color: var(--shade-50); letter-spacing: 2.5px; text-transform: uppercase; display: block; }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .btn-cart {
+      position: relative; background: transparent;
+      border: 1.5px solid var(--gold); color: var(--gold);
+      border-radius: var(--r-pill); padding: 11px 24px;
+      font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; gap: 8px;
+      transition: all 0.25s; letter-spacing: 0.3px;
+    }
+    .btn-cart:hover { background: var(--gold); color: var(--black); }
+    .cart-badge {
+      position: absolute; top: -9px; left: -9px;
+      background: var(--gold); color: var(--black);
+      border-radius: 50%; width: 21px; height: 21px;
+      font-size: 11px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      transform: scale(0); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .cart-badge.show { transform: scale(1); }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 130px 40px 90px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 90% 55% at 50% -10%, rgba(201,169,110,0.13) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 30% at 10% 90%, rgba(201,169,110,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 30% at 90% 90%, rgba(201,169,110,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: 18px;
+      font-size: 12px; letter-spacing: 4px; color: var(--gold); font-weight: 500;
+      margin-bottom: 32px; text-transform: uppercase;
+    }
+    .hero-eyebrow::before { content: ''; width: 60px; height: 1px; background: linear-gradient(to right, transparent, var(--gold)); }
+    .hero-eyebrow::after  { content: ''; width: 60px; height: 1px; background: linear-gradient(to left, transparent, var(--gold)); }
+    .hero h1 {
+      font-size: clamp(44px, 7.5vw, 92px);
+      font-weight: 900; line-height: 1.04; color: var(--white);
+      letter-spacing: -1.5px; margin-bottom: 10px;
+    }
+    .hero h1 em { font-style: italic; color: var(--gold); font-family: 'Playfair Display', serif; }
+    .hero-sub {
+      font-size: clamp(15px, 2.2vw, 20px); color: var(--shade-40);
+      font-weight: 400; max-width: 580px; line-height: 1.75;
+      margin: 22px auto 52px;
+    }
+    .hero-sub strong { color: var(--gold); font-weight: 700; }
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+    .btn-gold {
+      background: var(--gold); color: var(--black); border: none;
+      border-radius: var(--r-pill); padding: 17px 40px;
+      font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: 800;
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 9px;
+      transition: all 0.25s;
+    }
+    .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 14px 36px rgba(201,169,110,0.35); }
+    .btn-ghost {
+      background: transparent; color: var(--white);
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: var(--r-pill); padding: 17px 40px;
+      font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 9px;
+      transition: all 0.25s;
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+    .hero-stats {
+      display: flex; gap: 52px; margin-top: 76px;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .stat .num { font-size: 34px; font-weight: 900; color: var(--gold); display: block; line-height: 1; }
+    .stat .lbl { font-size: 12px; color: var(--shade-50); letter-spacing: 1px; margin-top: 4px; display: block; }
+
+    /* ===== PUSH BANNER ===== */
+    .push-band {
+      background: linear-gradient(135deg, #140f05 0%, #0c0c0c 45%, #140f05 100%);
+      border-top: 1px solid rgba(201,169,110,0.18);
+      border-bottom: 1px solid rgba(201,169,110,0.18);
+      padding: 40px 40px; text-align: center;
+    }
+    .push-tag {
+      display: inline-block; background: var(--gold); color: var(--black);
+      font-size: 10px; font-weight: 900; letter-spacing: 2.5px; padding: 4px 16px;
+      border-radius: var(--r-pill); margin-bottom: 18px; text-transform: uppercase;
+    }
+    .push-band h2 { font-size: clamp(20px, 3.5vw, 38px); font-weight: 900; color: var(--white); margin-bottom: 10px; }
+    .push-band h2 em { font-style: normal; color: var(--gold); }
+    .push-band p { font-size: 15px; color: var(--shade-40); max-width: 600px; margin: 0 auto; line-height: 1.7; }
+    .save-chips { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+    .save-chip {
+      border: 1px solid rgba(201,169,110,0.35);
+      background: rgba(201,169,110,0.08);
+      color: var(--gold); border-radius: var(--r-pill);
+      padding: 9px 22px; font-size: 13px; font-weight: 700;
+    }
+
+    /* ===== SECTIONS ===== */
+    .sec-wrap { padding: 100px 40px; }
+    .sec-inner { max-width: 1320px; margin: 0 auto; }
+    .sec-head { text-align: center; margin-bottom: 68px; }
+    .sec-eye { display: block; font-size: 11px; letter-spacing: 3.5px; color: var(--gold); text-transform: uppercase; font-weight: 700; margin-bottom: 16px; }
+    .sec-title { font-size: clamp(30px, 5vw, 54px); font-weight: 900; color: var(--white); line-height: 1.08; margin-bottom: 16px; }
+    .sec-title em { font-style: normal; color: var(--gold); }
+    .sec-desc { font-size: 16px; color: var(--shade-40); max-width: 520px; margin: 0 auto 22px; }
+    .sec-rule { width: 56px; height: 2px; border-radius: 9999px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); margin: 0 auto; }
+
+    /* ===== PACKAGES GRID ===== */
+    .pkg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 36px; }
+    .pkg-card {
+      background: var(--black-card);
+      border: 1px solid rgba(201,169,110,0.18);
+      border-radius: 22px; overflow: hidden; position: relative;
+      transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), border-color 0.3s, box-shadow 0.35s;
+      box-shadow: 0 6px 30px rgba(0,0,0,0.45);
+    }
+    .pkg-card:hover { transform: translateY(-7px); border-color: rgba(201,169,110,0.55); box-shadow: 0 28px 70px rgba(0,0,0,0.5); }
+    .pkg-card.feat { border-color: var(--gold); box-shadow: 0 6px 30px rgba(201,169,110,0.12), 0 0 0 1px rgba(201,169,110,0.05); }
+    .pkg-card.feat:hover { box-shadow: 0 28px 70px rgba(201,169,110,0.18); }
+    .pkg-pin {
+      position: absolute; top: 20px; right: 20px; z-index: 5;
+      font-size: 10px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 5px 15px; border-radius: var(--r-pill);
+    }
+    .pkg-pin.gold  { background: var(--gold); color: var(--black); }
+    .pkg-pin.red   { background: #ef4444; color: white; }
+    .pkg-img { width: 100%; height: 310px; overflow: hidden; position: relative; background: #080808; }
+    .pkg-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94); display: block; }
+    .pkg-card:hover .pkg-img img { transform: scale(1.05); }
+    .pkg-img::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 130px; background: linear-gradient(transparent, var(--black-card)); pointer-events: none; }
+    .pkg-body { padding: 28px 30px 34px; }
+    .pkg-series { font-size: 10px; letter-spacing: 2.5px; color: var(--gold); text-transform: uppercase; font-weight: 800; margin-bottom: 10px; }
+    .pkg-title { font-size: 25px; font-weight: 900; color: var(--white); line-height: 1.25; margin-bottom: 10px; }
+    .pkg-desc { font-size: 13px; color: var(--shade-50); line-height: 1.65; margin-bottom: 16px; }
+    .pkg-books { list-style: none; margin-bottom: 6px; display: flex; flex-direction: column; gap: 7px; }
+    .pkg-books li { font-size: 13px; color: var(--shade-40); display: flex; align-items: center; gap: 9px; }
+    .pkg-books li::before { content: '◆'; color: var(--gold); font-size: 7px; flex-shrink: 0; }
+    .pkg-price { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin: 24px 0 0; }
+    .p-now { font-size: 38px; font-weight: 900; color: var(--gold); line-height: 1; }
+    .p-now span { font-size: 15px; font-weight: 600; }
+    .p-was { font-size: 19px; color: var(--shade-50); text-decoration: line-through; }
+    .p-save { background: rgba(74,222,128,0.14); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); border-radius: var(--r-pill); font-size: 12px; font-weight: 800; padding: 3px 11px; }
+    .pkg-foot { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 26px; padding-top: 26px; border-top: 1px solid var(--hairline); flex-wrap: wrap; }
+    .pkg-incl { font-size: 13px; color: var(--shade-50); }
+    .pkg-incl strong { color: var(--gold); }
+    .btn-add {
+      background: var(--gold); color: var(--black); border: none;
+      border-radius: var(--r-pill); padding: 14px 30px;
+      font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 900;
+      cursor: pointer; display: flex; align-items: center; gap: 8px;
+      white-space: nowrap; transition: all 0.25s; flex-shrink: 0;
+    }
+    .btn-add:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 10px 28px rgba(201,169,110,0.4); }
+    .btn-add:active { transform: scale(0.97); }
+
+    /* ===== BOOKS ROW ===== */
+    .books-sec { background: linear-gradient(180deg, #000 0%, #050500 50%, #000 100%); }
+    .row-lbl { display: flex; align-items: center; gap: 18px; margin-bottom: 28px; }
+    .row-lbl-txt { font-size: 12px; letter-spacing: 2.5px; color: var(--gold); text-transform: uppercase; font-weight: 800; white-space: nowrap; }
+    .row-lbl-line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(201,169,110,0.35), transparent); }
+    .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 22px; margin-bottom: 56px; }
+    .book-card {
+      background: var(--black-card); border: 1px solid var(--hairline);
+      border-radius: var(--r-lg); overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+    .book-card:hover { transform: translateY(-5px); border-color: rgba(201,169,110,0.38); box-shadow: 0 18px 44px rgba(0,0,0,0.45); }
+    .bk-img-wrap { overflow: hidden; position: relative; }
+    .bk-img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; background: #0a0a0a; transition: transform 0.4s; }
+    .book-card:hover .bk-img { transform: scale(1.04); }
+    .bk-num { position: absolute; top: 9px; right: 9px; z-index: 2; background: var(--gold); color: var(--black); font-size: 10px; font-weight: 900; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .bk-body { padding: 16px; }
+    .bk-series { font-size: 9px; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; font-weight: 800; margin-bottom: 5px; }
+    .bk-title { font-size: 13px; font-weight: 800; color: var(--white); line-height: 1.4; margin-bottom: 3px; }
+    .bk-author { font-size: 11px; color: var(--shade-50); margin-bottom: 14px; }
+    .bk-foot { display: flex; align-items: center; justify-content: space-between; }
+    .bk-price { font-size: 19px; font-weight: 900; color: var(--gold); }
+    .bk-price span { font-size: 11px; font-weight: 500; }
+    .btn-sm {
+      background: transparent; border: 1px solid var(--gold); color: var(--gold);
+      border-radius: var(--r-pill); padding: 7px 15px;
+      font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 800;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-sm:hover { background: var(--gold); color: var(--black); }
+
+    /* ===== SHIPPING BAND ===== */
+    .ship-band { padding: 72px 40px; background: linear-gradient(135deg, #0c0b06 0%, #181306 50%, #0c0b06 100%); border-top: 1px solid rgba(201,169,110,0.12); border-bottom: 1px solid rgba(201,169,110,0.12); }
+    .ship-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 36px; text-align: center; }
+    .ship-feat .ico { font-size: 38px; display: block; margin-bottom: 16px; }
+    .ship-feat h3 { font-size: 18px; font-weight: 800; color: var(--gold); margin-bottom: 9px; }
+    .ship-feat p { font-size: 14px; color: var(--shade-40); line-height: 1.65; }
+
+    /* ===== CART SIDEBAR ===== */
+    .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.72); z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(6px); }
+    .cart-overlay.open { opacity: 1; pointer-events: all; }
+    .cart-side {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: 440px; max-width: 100vw;
+      background: var(--black-card);
+      border-right: 1px solid rgba(201,169,110,0.18);
+      transform: translateX(-100%);
+      transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+      z-index: 2001; display: flex; flex-direction: column;
+      box-shadow: 10px 0 60px rgba(0,0,0,0.55);
+    }
+    .cart-side.open { transform: translateX(0); }
+    .cart-hd { padding: 24px 22px 20px; border-bottom: 1px solid var(--hairline); display: flex; align-items: center; justify-content: space-between; }
+    .cart-hd h2 { font-size: 20px; font-weight: 900; }
+    .cart-cnt { font-size: 13px; color: var(--shade-50); margin-top: 3px; }
+    .btn-x { background: var(--black-surface); border: 1px solid var(--hairline); color: var(--white); border-radius: 50%; width: 36px; height: 36px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+    .btn-x:hover { border-color: var(--gold); }
+    .cart-list { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .cart-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--shade-50); padding: 40px; }
+    .cart-empty .ico { font-size: 54px; opacity: 0.4; margin-bottom: 14px; }
+    .cart-item-row { display: flex; gap: 14px; padding: 16px; background: var(--black-surface); border-radius: var(--r-md); border: 1px solid var(--hairline); align-items: center; animation: slideIn 0.3s ease; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: translateX(0); } }
+    .ci-img { width: 54px; height: 70px; object-fit: cover; border-radius: 5px; flex-shrink: 0; background: #000; }
+    .ci-info { flex: 1; min-width: 0; }
+    .ci-title { font-size: 13px; font-weight: 800; color: var(--white); line-height: 1.4; margin-bottom: 3px; }
+    .ci-type  { font-size: 10px; color: var(--gold); font-weight: 700; letter-spacing: 1px; }
+    .ci-price { font-size: 16px; font-weight: 900; color: var(--gold); margin-top: 5px; }
+    .btn-rm { background: transparent; border: none; color: var(--shade-50); cursor: pointer; font-size: 18px; padding: 4px; transition: color 0.2s; flex-shrink: 0; }
+    .btn-rm:hover { color: #ef4444; }
+    .cart-ft { padding: 20px 22px; border-top: 1px solid var(--hairline); background: #000; }
+    .totals { margin-bottom: 18px; display: flex; flex-direction: column; gap: 10px; }
+    .tot-row { display: flex; justify-content: space-between; }
+    .tot-row .lbl { font-size: 14px; color: var(--shade-40); }
+    .tot-row .val { font-size: 14px; color: var(--white); font-weight: 600; }
+    .tot-row.grand { border-top: 1px solid var(--hairline); padding-top: 12px; margin-top: 4px; }
+    .tot-row.grand .lbl { font-size: 16px; font-weight: 800; color: var(--white); }
+    .tot-row.grand .val { font-size: 23px; font-weight: 900; color: var(--gold); }
+    .btn-checkout {
+      width: 100%; background: var(--gold); color: var(--black); border: none;
+      border-radius: var(--r-pill); padding: 18px;
+      font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: 900;
+      cursor: pointer; transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-checkout:hover { background: var(--gold-light); box-shadow: 0 10px 28px rgba(201,169,110,0.4); }
+
+    /* ===== CHECKOUT MODAL ===== */
+    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(10px); }
+    .modal-bg.open { opacity: 1; pointer-events: all; }
+    .modal-box {
+      background: var(--black-card); border: 1px solid rgba(201,169,110,0.28);
+      border-radius: 22px; width: 100%; max-width: 570px; max-height: 92vh; overflow-y: auto;
+      box-shadow: 0 36px 70px rgba(0,0,0,0.65);
+      transform: translateY(28px) scale(0.96);
+      transition: transform 0.38s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .modal-bg.open .modal-box { transform: translateY(0) scale(1); }
+    .modal-hd { padding: 30px 30px 22px; border-bottom: 1px solid var(--hairline); display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+    .modal-hd h2 { font-size: 23px; font-weight: 900; margin-bottom: 4px; }
+    .modal-hd p { font-size: 13px; color: var(--shade-50); }
+    .modal-bd { padding: 30px; }
+    .sum-box { background: var(--black-surface); border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 18px; margin-bottom: 26px; }
+    .sum-box h3 { font-size: 11px; font-weight: 800; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+    .sum-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--shade-40); margin-bottom: 8px; }
+    .sum-total { display: flex; justify-content: space-between; border-top: 1px solid var(--hairline); padding-top: 14px; margin-top: 12px; }
+    .sum-total .s-lbl { font-size: 16px; font-weight: 800; color: var(--white); }
+    .sum-total .s-val { font-size: 20px; font-weight: 900; color: var(--gold); }
+    .fg { margin-bottom: 22px; }
+    .fl { display: block; font-size: 12px; font-weight: 800; color: var(--shade-30); margin-bottom: 8px; letter-spacing: 0.5px; }
+    .fl .r { color: var(--gold); margin-right: 3px; }
+    .fi, .fta {
+      width: 100%; background: var(--black-surface); border: 1px solid var(--hairline);
+      border-radius: var(--r-md); color: var(--white); font-family: 'Cairo', sans-serif;
+      font-size: 15px; padding: 14px 16px; transition: border-color 0.2s, box-shadow 0.2s;
+      direction: rtl; resize: vertical;
+    }
+    .fi:focus, .fta:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,169,110,0.14); }
+    .fi::placeholder, .fta::placeholder { color: var(--shade-60); }
+    .fta { min-height: 100px; }
+    .btn-submit {
+      width: 100%; background: var(--gold); color: var(--black); border: none;
+      border-radius: var(--r-pill); padding: 19px;
+      font-family: 'Cairo', sans-serif; font-size: 17px; font-weight: 900;
+      cursor: pointer; transition: all 0.25s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-submit:hover { background: var(--gold-light); box-shadow: 0 14px 36px rgba(201,169,110,0.42); transform: translateY(-1px); }
+    .fn { font-size: 12px; color: var(--shade-60); text-align: center; margin-top: 16px; line-height: 1.65; }
+    .fn strong { color: var(--shade-40); }
+
+    /* ===== SUCCESS SCREEN ===== */
+    .suc-overlay { position: fixed; inset: 0; background: #000; z-index: 4000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s; padding: 32px; }
+    .suc-overlay.open { opacity: 1; pointer-events: all; }
+    .suc-box { text-align: center; max-width: 530px; transform: scale(0.88) translateY(36px); transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.1s; }
+    .suc-overlay.open .suc-box { transform: scale(1) translateY(0); }
+    .suc-icon { width: 100px; height: 100px; margin: 0 auto 32px; background: rgba(74,222,128,0.1); border: 2px solid #4ade80; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 50px; animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.3); } 50% { box-shadow: 0 0 0 18px rgba(74,222,128,0); } }
+    .suc-box h2 { font-size: 38px; font-weight: 900; line-height: 1.2; margin-bottom: 12px; }
+    .suc-box h2 em { font-style: normal; color: var(--gold); }
+    .suc-box .sub { font-size: 16px; color: var(--shade-40); margin-bottom: 12px; line-height: 1.7; }
+    .suc-det { background: var(--black-card); border: 1px solid rgba(201,169,110,0.18); border-radius: 18px; padding: 26px; margin: 28px 0; text-align: right; }
+    .suc-row { display: flex; gap: 13px; margin-bottom: 14px; font-size: 14px; }
+    .suc-row:last-child { margin-bottom: 0; }
+    .sic { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .stxt { color: var(--shade-30); line-height: 1.5; }
+    .stxt strong { color: var(--gold); display: block; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 2px; }
+    .btn-home {
+      display: inline-flex; align-items: center; gap: 9px;
+      background: transparent; border: 2px solid var(--gold); color: var(--gold);
+      border-radius: var(--r-pill); padding: 15px 38px;
+      font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 800;
+      cursor: pointer; transition: all 0.25s; margin-top: 10px;
+    }
+    .btn-home:hover { background: var(--gold); color: var(--black); }
+
+    /* ===== FOOTER ===== */
+    footer { background: #000; border-top: 1px solid rgba(201,169,110,0.08); padding: 68px 40px 36px; text-align: center; }
+    .ft-logo img { height: 68px; width: 68px; border-radius: 50%; opacity: 0.75; margin-bottom: 18px; }
+    .ft-tag { font-size: 11px; color: var(--shade-50); letter-spacing: 3.5px; text-transform: uppercase; margin-bottom: 36px; }
+    .ft-links { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; margin-bottom: 44px; }
+    .ft-link { font-size: 13px; color: var(--shade-50); text-decoration: none; transition: color 0.2s; }
+    .ft-link:hover { color: var(--gold); }
+    .ft-rule { border: none; border-top: 1px solid var(--hairline); margin-bottom: 26px; }
+    .ft-copy { font-size: 12px; color: var(--shade-60); }
+
+    /* ===== FAB ===== */
+    .fab {
+      display: none; position: fixed; bottom: 22px; left: 22px; z-index: 999;
+      background: var(--gold); color: var(--black); border: none;
+      border-radius: 50%; width: 62px; height: 62px; font-size: 26px;
+      cursor: pointer; align-items: center; justify-content: center;
+      box-shadow: 0 10px 28px rgba(201,169,110,0.45); transition: transform 0.25s;
+    }
+    .fab:hover { transform: scale(1.09); }
+    .fab-b {
+      position: absolute; top: -5px; right: -5px;
+      background: #ef4444; color: #fff;
+      border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      transform: scale(0); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .fab-b.show { transform: scale(1); }
+
+    /* ===== TOAST ===== */
+    .toast-wrap { position: fixed; bottom: 34px; right: 34px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .toast {
+      background: var(--black-card); border: 1px solid rgba(201,169,110,0.35);
+      border-right: 3px solid var(--gold); color: var(--white);
+      border-radius: var(--r-md); padding: 14px 18px;
+      font-size: 14px; font-weight: 700; font-family: 'Cairo', sans-serif;
+      display: flex; align-items: center; gap: 10px;
+      max-width: 310px; box-shadow: 0 10px 28px rgba(0,0,0,0.45);
+      transform: translateX(120%); opacity: 0;
+      transition: all 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .toast.show { transform: translateX(0); opacity: 1; }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .anim { animation: fadeUp 0.65s ease forwards; }
+    .d1 { animation-delay: 0.1s; opacity: 0; }
+    .d2 { animation-delay: 0.22s; opacity: 0; }
+    .d3 { animation-delay: 0.34s; opacity: 0; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .pkg-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .navbar { padding: 12px 20px; }
+      .nav-logo img { height: 46px; width: 46px; }
+      .nav-logo-name { font-size: 16px; }
+      .hero { padding: 110px 22px 70px; }
+      .hero-stats { gap: 30px; }
+      .push-band { padding: 32px 22px; }
+      .sec-wrap { padding: 72px 22px; }
+      .ship-band { padding: 56px 22px; }
+      .books-grid { grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 16px; }
+      .cart-side { width: 100vw; }
+      .fab { display: flex; }
+      .btn-cart { display: none; }
+      .toast-wrap { bottom: 90px; right: 14px; left: 14px; }
+      .toast { max-width: 100%; }
+    }
+    @media (max-width: 480px) {
+      .hero h1 { letter-spacing: -0.5px; }
+      .hero-btns { flex-direction: column; align-items: stretch; }
+      .hero-btns a { justify-content: center; }
+      .books-grid { grid-template-columns: repeat(2, 1fr); }
+      .ship-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 380px) {
+      .ship-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ====== NAVBAR ====== -->
+<nav class="navbar" id="navbar">
+  <a href="#" class="nav-logo">
+    <img src="logo.png" alt="The BookShelf Logo" />
+    <div>
+      <span class="nav-logo-name">The BookShelf</span>
+      <span class="nav-logo-sub">Books · Stories · Worlds</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <button class="btn-cart" onclick="openCart()">
+      🛒 السلة
+      <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ====== HERO ====== -->
+<section class="hero" id="home">
+  <div class="hero-eyebrow">The BookShelf</div>
+  <h1 class="anim">عالمٌ كاملٌ في <em>كتاب</em></h1>
+  <p class="hero-sub anim d1">
+    اكتشف أفضل الكتب بأسعار حصرية — وفّر أكثر مع
+    <strong>باقاتنا المميزة</strong> ✨
+  </p>
+  <div class="hero-btns anim d2">
+    <a href="#packages" class="btn-gold">🎁 تصفّح الباقات</a>
+    <a href="#individual" class="btn-ghost">📚 الكتب المفردة</a>
+  </div>
+  <div class="hero-stats anim d3">
+    <div class="stat"><span class="num">2</span><span class="lbl">كتاب متاح</span></div>
+    <div class="stat"><span class="num">1</span><span class="lbl">باقة مميزة</span></div>
+    <div class="stat"><span class="num">60</span><span class="lbl">جنيه شحن</span></div>
+    <div class="stat"><span class="num">&lt;7</span><span class="lbl">أيام توصيل</span></div>
+  </div>
+</section>
+
+<!-- ====== PUSH BANNER ====== -->
+<div class="push-band">
+  <div class="push-tag">💡 نصيحة الخبراء</div>
+  <h2>وفّر أكثر مع <em>الباقات المميزة</em></h2>
+  <p>اشترِ الباقة كاملةً بدلاً من كتاب واحد — وفّر مئات الجنيهات وتستلم كل شيء دفعةً واحدة</p>
+  <div class="save-chips">
+    <div class="save-chip">🧠 فلتر دماغك: وفّر 100 جنيه</div>
+  </div>
+</div>
+
+<!-- ====== PACKAGES ====== -->
+<div id="packages">
+  <div class="sec-wrap">
+    <div class="sec-inner">
+      <div class="sec-head">
+        <span class="sec-eye">⭐ الأكثر قيمة</span>
+        <h2 class="sec-title">الباقات <em>المميزة</em></h2>
+        <p class="sec-desc">اشترِ أكثر، وفّر أكثر — باقاتنا مُصمَّمة لتمنحك أفضل قيمة مقابل مالك</p>
+        <div class="sec-rule"></div>
+      </div>
+      <div class="pkg-grid">
+
+        <!-- Filter Dimaaghak Package -->
+        <div class="pkg-card feat">
+          <span class="pkg-pin red">🔥 الأكثر مبيعًا</span>
+          <div class="pkg-img">
+            <img src="bundle_3_books.png" alt="فلتر دماغك" onerror="this.style.background='#111'" />
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-series">🧠 تطوير الذات — 3 كتب</div>
+            <div class="pkg-title">باقة «فلتر دماغك»</div>
+            <p class="pkg-desc">رحلة نفسية عميقة لفهم نفسك ومن حولك — 3 كتب أساسية في علم النفس التطبيقي.</p>
+            <ul class="pkg-books">
+              <li>عقدك النفسية سجنك الأبدي</li>
+              <li>محاط بالمرضى النفسيين</li>
+              <li>الهشاشة النفسية</li>
+            </ul>
+            <div class="pkg-price">
+              <div class="p-now">400 <span>ج.م</span></div>
+              <div class="p-was">600 ج.م</div>
+              <div class="p-save">وفّر 200 ج.م</div>
+            </div>
+            <div class="pkg-foot">
+              <div class="pkg-incl">يشمل: <strong>3 كتب مميزة</strong></div>
+              <button class="btn-add" onclick="addToCart({id:'filter-pkg',title:'باقة فلتر دماغك',type:'باقة 3 كتب',price:400,img:'bundle_3_books.png'})">
+                🛒 أضف للسلة
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Freedom Package -->
+        <div class="pkg-card">
+          <span class="pkg-pin gold">⭐ جديد</span>
+          <div class="pkg-img">
+            <img src="bundle_2_books.png" alt="باقة التحرر النفسي" onerror="this.style.background='#111'" />
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-series">🧠 تطوير الذات — 2 كتب</div>
+            <div class="pkg-title">باقة «التحرر النفسي»</div>
+            <p class="pkg-desc">اكتشف ذاتك وتحرر من القيود النفسية مع هذه الباقة المميزة التي تركز على القوة الداخلية والمرونة.</p>
+            <ul class="pkg-books">
+              <li>عقدك النفسية سجنك الأبدي</li>
+              <li>الهشاشة النفسية</li>
+            </ul>
+            <div class="pkg-price">
+              <div class="p-now">290 <span>ج.م</span></div>
+              <div class="p-was">400 ج.م</div>
+              <div class="p-save">وفّر 110 ج.م</div>
+            </div>
+            <div class="pkg-foot">
+              <div class="pkg-incl">يشمل: <strong>كتابان مميزان</strong></div>
+              <button class="btn-add" onclick="addToCart({id:'freedom-pkg',title:'باقة التحرر النفسي',type:'باقة 2 كتب',price:290,img:'bundle_2_books.png'})">
+                🛒 أضف للسلة
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== INDIVIDUAL BOOKS ====== -->
+<div id="individual" class="books-sec">
+  <div class="sec-wrap">
+    <div class="sec-inner">
+      <div class="sec-head">
+        <span class="sec-eye">📖 كتب مفردة</span>
+        <h2 class="sec-title">الكتب <em>المتاحة</em></h2>
+        <p class="sec-desc">يمكنك شراء كل كتاب بشكل منفرد — أو وفّر أكثر مع الباقات المميزة أعلاه</p>
+        <div class="sec-rule"></div>
+      </div>
+
+      <div class="row-lbl">
+        <span class="row-lbl-txt">🧠 كتب علم النفس</span>
+        <div class="row-lbl-line"></div>
+      </div>
+      <div class="books-grid" id="arGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SHIPPING BAND ====== -->
+<div class="ship-band">
+  <div class="ship-grid">
+    <div class="ship-feat">
+      <span class="ico">🚚</span>
+      <h3>شحن سريع</h3>
+      <p>نوصّل طلبك في <strong>أقل من 7 أيام</strong> لأي مكان في مصر</p>
+    </div>
+    <div class="ship-feat">
+      <span class="ico">💰</span>
+      <h3>مصاريف الشحن</h3>
+      <p><strong style="color:var(--gold);font-size:24px">60 ج.م</strong><br/>فقط لأي عنوان داخل مصر</p>
+    </div>
+    <div class="ship-feat">
+      <span class="ico">📦</span>
+      <h3>تغليف محترف</h3>
+      <p>كتبك تُغلَّف بعناية لتصلك بحالة ممتازة تمامًا</p>
+    </div>
+    <div class="ship-feat">
+      <span class="ico">📱</span>
+      <h3>تأكيد واتساب</h3>
+      <p>سنتواصل معك عبر واتساب لتأكيد طلبك وموعد التوصيل</p>
+    </div>
+  </div>
+</div>
+
+<!-- ====== FOOTER ====== -->
+<footer>
+  <div class="ft-logo"><img src="logo.png" alt="The BookShelf" /></div>
+  <div class="ft-tag">Books · Stories · Worlds</div>
+  <div class="ft-links">
+    <a href="#home" class="ft-link">الرئيسية</a>
+    <a href="#packages" class="ft-link">الباقات</a>
+    <a href="#individual" class="ft-link">كتب مفردة</a>
+    <a href="javascript:void(0)" onclick="openCart()" class="ft-link">السلة</a>
+  </div>
+  <hr class="ft-rule" />
+  <p class="ft-copy">© 2025 The BookShelf — جميع الحقوق محفوظة</p>
+</footer>
+
+<!-- ====== FAB ====== -->
+<button class="fab" id="fab" onclick="openCart()">
+  🛒
+  <span class="fab-b" id="fabB">0</span>
+</button>
+
+<!-- ====== CART SIDEBAR ====== -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-side" id="cartSide">
+  <div class="cart-hd">
+    <div>
+      <h2>🛒 سلة التسوق</h2>
+      <div class="cart-cnt" id="cartCnt">السلة فارغة</div>
+    </div>
+    <button class="btn-x" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-list" id="cartList">
+    <div class="cart-empty" id="cartEmpty">
+      <div class="ico">🛒</div>
+      <p>سلتك فارغة<br/><span style="color:var(--shade-60);font-size:13px">أضف بعض الكتب!</span></p>
+    </div>
+  </div>
+  <div class="cart-ft" id="cartFt" style="display:none">
+    <div class="totals">
+      <div class="tot-row"><span class="lbl">المجموع الفرعي</span><span class="val" id="subVal">0 ج.م</span></div>
+      <div class="tot-row"><span class="lbl">مصاريف الشحن</span><span class="val">60 ج.م</span></div>
+      <div class="tot-row grand"><span class="lbl">الإجمالي</span><span class="val" id="totVal">60 ج.م</span></div>
+    </div>
+    <button class="btn-checkout" onclick="openCheckout()">✅ إتمام الطلب</button>
+  </div>
+</div>
+
+<!-- ====== CHECKOUT MODAL ====== -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <div><h2>📦 تفاصيل الطلب</h2><p>أدخل بياناتك وسنتواصل معك على واتساب</p></div>
+      <button class="btn-x" onclick="closeCheckout()">✕</button>
+    </div>
+    <div class="modal-bd">
+      <div class="sum-box">
+        <h3>ملخص الطلب</h3>
+        <div id="sumItems"></div>
+        <div class="sum-total">
+          <span class="s-lbl">الإجمالي شامل الشحن</span>
+          <span class="s-val" id="sumTotal">0 ج.م</span>
+        </div>
+      </div>
+      <form id="orderForm" onsubmit="submitOrder(event)">
+        <div class="fg">
+          <label class="fl" for="fName"><span class="r">*</span> الاسم الكامل</label>
+          <input type="text" id="fName" class="fi" placeholder="مثال: أحمد محمد علي" required />
+        </div>
+        <div class="fg">
+          <label class="fl" for="fPhone"><span class="r">*</span> رقم الهاتف (واتساب)</label>
+          <input type="tel" id="fPhone" class="fi" placeholder="01xxxxxxxxx" required />
+        </div>
+        <div class="fg">
+          <label class="fl" for="fAddr"><span class="r">*</span> العنوان بالكامل</label>
+          <textarea id="fAddr" class="fta" placeholder="المحافظة، المدينة، الحي، الشارع، رقم المنزل / الشقة" required></textarea>
+        </div>
+        <button type="submit" id="btnSubmit" class="btn-submit">🎉 تأكيد الطلب — سأُتواصل معك قريبًا</button>
+        <p class="fn">بعد تأكيد طلبك، سيتواصل معك فريقنا عبر <strong>واتساب</strong> لتأكيد التفاصيل ومتابعة الشحن.</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SUCCESS ====== -->
+<div class="suc-overlay" id="sucOverlay">
+  <div class="suc-box">
+    <div class="suc-icon">✅</div>
+    <h2>تم تأكيد طلبك <em>بنجاح!</em></h2>
+    <p class="sub">شكرًا لثقتك في The BookShelf 📚</p>
+    <div class="suc-det" id="sucDet"></div>
+    <p style="font-size:14px;color:var(--shade-50)">سيتم التواصل معك على واتساب لتأكيد الطلب وتحديد موعد التوصيل.</p>
+    <button class="btn-home" onclick="goHome()">🏠 العودة للرئيسية</button>
+  </div>
+</div>
+
+<!-- ====== TOAST ====== -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ── DATA ── */
+const HP = [];
+const AR = [
+  {id:'oqda',title:'عقدك النفسية سجنك الأبدي',author:'كتاب علم النفس',price:200,img:'عقدك النفسية سجنك الأبدي_.jpg'},
+  {id:'mohat',title:'محاط بالمرضى النفسيين',author:'كتاب علم النفس',price:200,img:'محاط بالمرضى النفسيين.webp'},
+  {id:'hashasha',title:'الهشاشة النفسية',author:'كتاب علم النفس',price:200,img:'الهشاشة النفسية.webp'},
+];
+
+/* ── STATE ── */
+let cart = JSON.parse(localStorage.getItem('tbsCart')||'[]');
+const SHIP = 60;
+
+/* ── RENDER ── */
+function renderBooks(){
+  const hpGrid = document.getElementById('hpGrid');
+  if (hpGrid) {
+    hpGrid.innerHTML = '';
+  }
+
+  document.getElementById('arGrid').innerHTML = AR.map(b=>`
+    <div class="book-card">
+      <div class="bk-img-wrap">
+        <img class="bk-img" src="${b.img}" alt="${b.title}" loading="lazy" />
+      </div>
+      <div class="bk-body">
+        <div class="bk-series">علم النفس</div>
+        <div class="bk-title">${b.title}</div>
+        <div class="bk-author">${b.author}</div>
+        <div class="bk-foot">
+          <div class="bk-price">${b.price} <span>ج.م</span></div>
+          <button class="btn-sm" onclick='addToCart(${JSON.stringify({id:b.id,title:b.title,type:"كتاب مفرد",price:b.price,img:b.img})})'>+ أضف</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/* ── CART ── */
+function addToCart(item){
+  if(cart.find(c=>c.id===item.id)){showToast('📚 الكتاب موجود في سلتك بالفعل!','info');return;}
+  cart.push({...item});
+  save(); updateUI();
+  showToast('✅ تمت الإضافة: '+item.title,'success');
+  openCart();
+}
+function removeFromCart(id){
+  cart=cart.filter(c=>c.id!==id);
+  save(); updateUI(); renderCart();
+}
+function save(){ localStorage.setItem('tbsCart',JSON.stringify(cart)); }
+function sub(){ return cart.reduce((s,i)=>s+i.price,0); }
+function tot(){ return sub()+(cart.length?SHIP:0); }
+
+function updateUI(){
+  const n=cart.length;
+  ['cartBadge','fabB'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.textContent=n;
+    n?el.classList.add('show'):el.classList.remove('show');
+  });
+  document.getElementById('cartCnt').textContent = n?n+' '+(n===1?'كتاب':'كتب')+' في سلتك':'السلة فارغة';
+  document.getElementById('subVal').textContent = sub().toLocaleString('ar-EG')+' ج.م';
+  document.getElementById('totVal').textContent = tot().toLocaleString('ar-EG')+' ج.م';
+  document.getElementById('cartEmpty').style.display = n?'none':'flex';
+  document.getElementById('cartFt').style.display = n?'block':'none';
+}
+
+function renderCart(){
+  document.querySelectorAll('.cart-item-row').forEach(el=>el.remove());
+  cart.forEach(item=>{
+    const div=document.createElement('div');
+    div.className='cart-item-row';
+    div.innerHTML=`
+      <img class="ci-img" src="${item.img}" alt="${item.title}"
+           onerror="this.src='https://via.placeholder.com/54x70/111/c9a96e?text=📚'" />
+      <div class="ci-info">
+        <div class="ci-title">${item.title}</div>
+        <div class="ci-type">${item.type||'كتاب مفرد'}</div>
+        <div class="ci-price">${item.price.toLocaleString('ar-EG')} ج.م</div>
+      </div>
+      <button class="btn-rm" onclick="removeFromCart('${item.id}')">✕</button>`;
+    document.getElementById('cartList').insertBefore(div,document.getElementById('cartEmpty'));
+  });
+}
+
+function openCart(){
+  renderCart(); updateUI();
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartSide').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeCart(){
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartSide').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+/* ── CHECKOUT ── */
+function openCheckout(){
+  if(!cart.length)return;
+  closeCart();
+  document.getElementById('sumItems').innerHTML=
+    cart.map(i=>`<div class="sum-row"><span>${i.title}</span><span>${i.price.toLocaleString('ar-EG')} ج.م</span></div>`).join('')+
+    `<div class="sum-row"><span>مصاريف الشحن</span><span>${SHIP} ج.م</span></div>`;
+  document.getElementById('sumTotal').textContent=tot().toLocaleString('ar-EG')+' ج.م';
+  document.getElementById('modalBg').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeCheckout(){
+  document.getElementById('modalBg').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+/* ── SUBMIT ── */
+// ⚠️ ضع الرابط الذي ستحصل عليه من جوجل هنا بدلاً من الرابط الوهمي
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz-oH00mZYJj2PpMOpnmY_eW2IjGe-zkzYrwaj0LnVSkZsfcXfvwLmDPE9b5fefzTqudA/exec';
+
+async function submitOrder(e){
+  e.preventDefault();
+  const name=document.getElementById('fName').value.trim();
+  const phone=document.getElementById('fPhone').value.trim();
+  const addr=document.getElementById('fAddr').value.trim();
+  if(!name||!phone||!addr){showToast('⚠️ الرجاء ملء جميع الحقول','warning');return;}
+
+  const btn = document.getElementById('btnSubmit');
+  const ogText = btn.innerHTML;
+  btn.innerHTML = '⏳ جاري إرسال الطلب...';
+  btn.style.opacity = '0.7';
+  btn.style.pointerEvents = 'none';
+
+  const now=new Date();
+  const oid='TBS-'+Date.now().toString().slice(-6);
+  
+  const formData = new FormData();
+  formData.append('orderId', oid);
+  formData.append('date', now.toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'}));
+  formData.append('time', now.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}));
+  formData.append('name', name);
+  formData.append('phone', phone);
+  formData.append('address', addr);
+  formData.append('items', cart.map(c=>c.title+' ('+c.price+' ج.م)').join(' | '));
+  formData.append('subtotal', sub());
+  formData.append('shipping', SHIP);
+  formData.append('total', tot());
+  formData.append('status', 'جديد — في انتظار التأكيد');
+
+  try {
+    if(GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+      console.warn("Google Script URL not set. Simulating success.");
+      await new Promise(r => setTimeout(r, 1000));
+    } else {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors'
+      });
+    }
+
+    closeCheckout();
+    const orderData = { orderId: oid, name, phone, address: addr, total: tot() };
+    showSuccess(orderData);
+    
+    cart=[]; save(); updateUI();
+    document.getElementById('orderForm').reset();
+  } catch(error) {
+    console.error('Error submitting order:', error);
+    showToast('❌ حدث خطأ أثناء إرسال الطلب، تأكد من اتصالك بالإنترنت وحاول مرة أخرى', 'error');
+  } finally {
+    btn.innerHTML = ogText;
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  }
+}
+
+/* ── SUCCESS ── */
+function showSuccess(order){
+  document.getElementById('sucDet').innerHTML=`
+    <div class="suc-row"><span class="sic">🔖</span><div class="stxt"><strong>رقم الطلب</strong>${order.orderId}</div></div>
+    <div class="suc-row"><span class="sic">👤</span><div class="stxt"><strong>الاسم</strong>${order.name}</div></div>
+    <div class="suc-row"><span class="sic">📱</span><div class="stxt"><strong>رقم الهاتف</strong>${order.phone}</div></div>
+    <div class="suc-row"><span class="sic">📍</span><div class="stxt"><strong>العنوان</strong>${order.address}</div></div>
+    <div class="suc-row"><span class="sic">💰</span><div class="stxt"><strong>إجمالي الطلب</strong>${order.total.toLocaleString('ar-EG')} ج.م شامل الشحن</div></div>`;
+  document.getElementById('sucOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function goHome(){
+  document.getElementById('sucOverlay').classList.remove('open');
+  document.body.style.overflow='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── TOAST ── */
+function showToast(msg,type='success'){
+  const icons={success:'✅',info:'ℹ️',warning:'⚠️',error:'❌'};
+  const t=document.createElement('div');
+  t.className='toast';
+  t.innerHTML=`<span>${icons[type]||'✅'}</span><span>${msg}</span>`;
+  if(type==='warning')t.style.borderRightColor='#f59e0b';
+  if(type==='error')t.style.borderRightColor='#ef4444';
+  document.getElementById('toastWrap').appendChild(t);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400);},3200);
+}
+
+/* ── NAVBAR SCROLL ── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50);
+});
+
+/* ── SCROLL ANIMATIONS ── */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.style.animation='fadeUp 0.65s ease forwards';
+      obs.unobserve(e.target);
+    }
+  });
+},{threshold:0.1});
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  renderBooks();
+  updateUI();
+  setTimeout(()=>{
+    document.querySelectorAll('.pkg-card,.book-card,.ship-feat').forEach(el=>{
+      el.style.opacity='0';
+      obs.observe(el);
+    });
+  },150);
+});
+</script>
+</body>
+</html>
